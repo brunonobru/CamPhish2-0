@@ -37,38 +37,19 @@ bash camphish.sh
 
 Isso deve iniciar o processo de configuração e, quando aplicável, iniciar o servidor web que utiliza PHP.
 
-## Instalação em Termux (Android)
+## Adicionando imagens de teste
 
-No Termux, os nomes de pacotes podem variar. Um fluxo comum é:
+Você pode adicionar uma foto de teste no README para mostrar como funciona a captura de imagens:
 
-```bash
-pkg update && pkg upgrade -y
-pkg install php openssh git wget -y
-cd CamPhish
-bash camphish.sh
+```markdown
+![Foto de teste](images/teste.jpg)
 ```
 
-## Observações importantes
+> Coloque sua imagem dentro da pasta `images` do projeto com o nome `teste.jpg`.
 
-* Se o script reclamar que "PHP não está instalado", confirme a versão do PHP com `php -v` e verifique se o binário está no PATH.
-* Se o projeto requer módulos PHP adicionais (por exemplo `php-curl`, `php-mbstring`, `php-xml`), instale-os com `apt-get install php-curl php-mbstring php-xml` (ou o equivalente para sua distribuição).
-* Se for executar em servidor remoto e precisar acessar via SSH, certifique-se que o servidor SSH esteja em execução (`systemctl status ssh` / `service ssh status`) e que portas necessárias estejam liberadas no firewall.
+Exemplo de visualização:
 
-## Como adicionar imagens (captura pela câmera)
-
-Se o seu projeto permite capturar fotos com a câmera e adicionar imagens, coloque aqui instruções específicas sobre:
-
-* permissões necessárias (ex: permissões do navegador ou do app),
-* endpoints para upload de imagens (se existir um backend PHP recebendo `multipart/form-data`),
-* caminhos de armazenamento das imagens no servidor.
-
-(Adapte esta seção conforme seu código: indique o arquivo responsável pelo upload, as rotas e exemplos de `curl` para enviar imagens.)
-
-## Exemplo rápido de upload via `curl`
-
-```bash
-curl -X POST -F "photo=@/caminho/para/foto.jpg" https://seu-servidor/exemplo_upload.php
-```
+![Foto de teste](https://via.placeholder.com/150)
 
 ## Segurança
 
@@ -80,13 +61,3 @@ curl -X POST -F "photo=@/caminho/para/foto.jpg" https://seu-servidor/exemplo_upl
 ## Licença
 
 Adicione aqui a licença do seu projeto (ex: MIT, GPL, etc.).
-
----
-
-Se quiser, eu posso:
-
-* gerar uma versão curta para mostrar diretamente no GitHub (com emojis e estilo),
-* adaptar o texto para um README `README.md` já existente (fazer um diff),
-* criar exemplos de código PHP para o endpoint de upload.
-
-Diga qual opção prefere e eu já edito aqui mesmo.
