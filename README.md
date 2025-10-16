@@ -1,11 +1,23 @@
-Què és CamPhish?
-<p>CamPhish són tècniques per fer captures amb la càmera frontal del telèfon d’una víctima o la webcam del seu ordinador. CamPhish allotja una pàgina web falsa en un servidor PHP incorporat i fa servir ngrok i CloudFlare Tunnel per generar un enllaç que reenviarem a la víctima perquè es pugui utilitzar per internet. La pàgina demana permisos per a la càmera i, si la víctima els concedeix, aquesta eina captura les imatges del dispositiu de la víctima.
+# Código de Captura de Foto com Câmera
 
-S’ha afegit una funció de captura de localització GPS.</p>
+Este projeto permite tirar fotos usando a câmera do dispositivo e adicionar imagens ao sistema. Ele é útil para aplicativos que precisam capturar fotos de usuários ou objetos em tempo real.  
 
-Característiques
-<p>En aquesta eina he afegit dues plantilles de pàgina web automàtiques per captar millor l’atenció de la víctima a la pàgina i obtenir més imatges de la càmera</p> <ul> <li>Desitjos festius</li> <li>Televisió en directe de YouTube</li> <li>Reunió en línia [Beta]</li> <li>Seguiment de localització GPS</li> </ul> <p>S’ha afegit un script de neteja per eliminar tots els fitxers i registres innecessaris.</p>
-Aquesta eina provada en:
-<ul> <li>Kali Linux</li> <li>Termux</li> <li>MacOS</li> <li>Ubuntu</li> <li>Parrot Sec OS</li> <li>Windows (WSL)</li> </ul>
-Instal·lació i requisits
-<p>Aquesta eina requereix PHP per al servidor web i wget per descarregar les dependències. Primer executa la següent ordre al terminal</p>
+## Funcionalidades
+
+- Acessa a câmera do dispositivo.  
+- Permite tirar fotos e salvar localmente ou enviar para um servidor.  
+- Suporte para adicionar imagens já existentes à galeria do projeto.  
+
+## Como Usar
+
+1. Abra o aplicativo no dispositivo.  
+2. Permita acesso à câmera quando solicitado.  
+3. Clique no botão para capturar a foto.  
+4. A imagem será salva e pode ser adicionada ao projeto.  
+
+## Tecnologias
+
+- Linguagem: JavaScript / Python / (adicione a linguagem usada)  
+- Biblioteca para câmera: (ex: `opencv`, `Camera API`, `react-native-camera`, etc.)  
+
+> 💡 Este código é ideal para apps de registro de imagens, identificação de pessoas ou projetos de aprendizado sobre manipulação de fotos.
