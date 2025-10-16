@@ -42,7 +42,7 @@ Isso deve iniciar o processo de configuração e, quando aplicável, iniciar o s
 Você pode adicionar uma foto de teste no README para mostrar como funciona a captura de imagens:
 
 ```markdown
-![Foto de teste](images/teste.jpg)
+![Foto de teste](https://play-lh.googleusercontent.com/g7fyKspePb-etgdff7NSZSfV4uWMQtCEir6dejMfsyQBzw0AlayloikSouOXVQj6Tva-=w240-h480-rw)
 ```
 
 > Coloque sua imagem dentro da pasta `images` do projeto com o nome `teste.jpg`.
