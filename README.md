@@ -19,7 +19,6 @@ apt-get -y update
 apt-get -y install php openssh-client git wget
 ```
 
-> Observação: em algumas distribuições o pacote do `openssh` pode ter outro nome (`openssh-client` / `openssh-server`). Se precisar do servidor SSH (para conexões remotas), instale `openssh-server`.
 
 ## Instalação e execução do CamPhish
 
