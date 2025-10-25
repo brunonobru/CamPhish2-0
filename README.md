@@ -15,8 +15,9 @@
 Abra um terminal e execute:
 
 ```bash
-apt-get -y update
-apt-get -y install php openssh-client git wget
+sudo apt-get update -y
+sudo apt-get install -y php openssh-client git wget
+
 ```
 
 
